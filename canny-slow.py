@@ -90,8 +90,21 @@ for x in range(1, width-1):
 
 scipy.misc.imsave('cannynewmagsup.jpg', mag_sup)
 
-med = numpy.mean(mag_sup)
-th = 1.33*med
-tl = 0.66*med
+m = numpy.max(mag_sup)
+th = 0.3*m
+tl = 0.1*m
 
 
+gnh = numpy.zeros((width, height))
+gnl = numpy.zeros((width, height))
+
+for x in range(width):
+    for y in range(height):
+        if mag_sup[x][y]>=th:
+            gnh[x][y]=mag_sup[x][y]
+        if mag_sup[x][y]>=tl:
+            gnl[x][y]=mag_sup[x][y]
+scipy.misc.imsave('cannynewgnlbeforeminus.jpg', gnl)
+gnl = gnl-gnh
+scipy.misc.imsave('cannynewgnlafterminus.jpg', gnl)
+scipy.misc.imsave('cannynewgnh.jpg', gnh)
