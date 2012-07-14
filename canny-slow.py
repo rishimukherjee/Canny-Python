@@ -5,8 +5,9 @@ import Image
 import math
 from math import pi
 
-sigma = 1.4
-f = 'Bikesgray.jpg'
+sigma = 2.2
+
+f = 'lena_std.tif'
 img = Image.open(f).convert('L')                                          #grayscale
 imgdata = numpy.array(img, dtype = float)                                 
 G = ndi.filters.gaussian_filter(imgdata, sigma)                           #gaussian low pass filter
@@ -91,7 +92,7 @@ for x in range(1, width-1):
 scipy.misc.imsave('cannynewmagsup.jpg', mag_sup)
 
 m = numpy.max(mag_sup)
-th = 0.3*m
+th = 0.2*m
 tl = 0.1*m
 
 
@@ -108,3 +109,22 @@ scipy.misc.imsave('cannynewgnlbeforeminus.jpg', gnl)
 gnl = gnl-gnh
 scipy.misc.imsave('cannynewgnlafterminus.jpg', gnl)
 scipy.misc.imsave('cannynewgnh.jpg', gnh)
+
+
+def traverse(i, j):
+    x = [-1, 0, 1, -1, 1, -1, 0, 1]
+    y = [-1, -1, -1, 0, 0, 1, 1, 1]
+    for k in range(8):
+        if gnh[i+x[k]][j+y[k]]==0 and gnl[i+x[k]][j+y[k]]!=0:
+            gnh[i+x[k]][j+y[k]]=1
+            traverse(i+x[k], j+y[k])
+
+for i in range(1, width-1):
+    for j in range(1, height-1):
+        if gnh[i][j]:
+            gnh[i][j]=1
+            traverse(i, j)
+
+
+scipy.misc.imsave('cannynewout.jpg', gnh)
+            
